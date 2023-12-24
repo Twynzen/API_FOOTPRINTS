@@ -1,28 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Animal } from './entities/animal.entity';
 import { CreateAnimalDto } from './dto/create-animal.dto';
 import { UpdateAnimalDto } from './dto/update-animal.dto';
 
 @Injectable()
 export class AnimalService {
-    private animals = []; // Esto será reemplazado por la base de datos
+  constructor(
+    @InjectRepository(Animal)
+    private animalRepository: Repository<Animal>,
+  ) {}
 
-    create(createAnimalDto: CreateAnimalDto) {
-      // Agregar lógica para guardar un nuevo animal
-    }
+  async create(createAnimalDto: CreateAnimalDto): Promise<Animal> {
+    const newAnimal = this.animalRepository.create(createAnimalDto);
+    return this.animalRepository.save(newAnimal);
+  }
+
+  async findAll(): Promise<Animal[]> {
+    return this.animalRepository.find();
+  }
+
+  async findOne(id: number): Promise<Animal> {
+    return this.animalRepository.findOneBy({ id });
+  }
   
-    findAll() {
-      // Retornar todos los animales
-    }
+  async update(id: number, updateAnimalDto: UpdateAnimalDto): Promise<Animal> {
+    await this.animalRepository.update(id, updateAnimalDto);
+    return this.animalRepository.findOneBy({ id });
+  }
   
-    findOne(id: number) {
-      // Encontrar un animal por ID
-    }
-  
-    update(id: number, updateAnimalDto: UpdateAnimalDto) {
-      // Actualizar un animal por ID
-    }
-  
-    remove(id: number) {
-      // Eliminar un animal por ID
-    }
+
+  async remove(id: number): Promise<void> {
+    await this.animalRepository.delete(id);
+  }
 }
