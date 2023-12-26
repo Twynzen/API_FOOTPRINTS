@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Animal } from './entities/animal.entity';
@@ -22,16 +22,25 @@ export class AnimalService {
   }
 
   async findOne(id: number): Promise<Animal> {
-    return this.animalRepository.findOneBy({ id });
+    const animal = await this.animalRepository.findOneBy({ id });
+    if (!animal) {
+      throw new NotFoundException(`Animal with ID ${id} not found`);
+    }
+    return animal;
   }
-  
+
   async update(id: number, updateAnimalDto: UpdateAnimalDto): Promise<Animal> {
-    await this.animalRepository.update(id, updateAnimalDto);
-    return this.animalRepository.findOneBy({ id });
+    const updateResult = await this.animalRepository.update(id, updateAnimalDto);
+    if (updateResult.affected === 0) {
+      throw new NotFoundException(`Animal with ID ${id} not found`);
+    }
+    return this.findOne(id);
   }
-  
 
   async remove(id: number): Promise<void> {
-    await this.animalRepository.delete(id);
+    const deleteResult = await this.animalRepository.delete(id);
+    if (deleteResult.affected === 0) {
+      throw new NotFoundException(`Animal with ID ${id} not found`);
+    }
   }
 }
