@@ -32,6 +32,7 @@ src/
 Para comenzar a utilizar la API, clona el repositorio y ejecuta los siguientes comandos:
 
 ```bash
+npm i --save @nestjs/typeorm typeorm
 npm install
 npm run start
 
@@ -41,11 +42,11 @@ npm run start
 
 La API expone varios endpoints para interactuar con la información de los animales:
 
-POST /animal: Añade un nuevo registro de animal.
-GET /animal: Obtiene una lista de todos los animales.
-GET /animal/{id}: Obtiene la información de un animal específico por su ID.
-PATCH /animal/{id}: Actualiza la información de un animal específico por su ID.
-DELETE /animal/{id}: Elimina un registro de animal por su ID.
+>POST /animal: Añade un nuevo registro de animal.
+>GET /animal: Obtiene una lista de todos los animales.
+>GET /animal/{id}: Obtiene la información de un animal específico por su ID.
+>PATCH /animal/{id}: Actualiza la información de un animal específico por su ID.
+>DELETE /animal/{id}: Elimina un registro de animal por su ID.
 
 
 ## Pruebas

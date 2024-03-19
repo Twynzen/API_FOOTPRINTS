@@ -1,13 +1,25 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { AnimalService } from './animal.service';
-import { CreateAnimalDto } from './dto/create-animal.dto';
-import { UpdateAnimalDto } from './dto/update-animal.dto';
-
-@Controller('animal')
-export class AnimalController {
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    ParseIntPipe,
+    HttpCode,
+    HttpStatus,
+  } from '@nestjs/common';
+  import { AnimalService } from './animal.service';
+  import { CreateAnimalDto } from './dto/create-animal.dto';
+  import { UpdateAnimalDto } from './dto/update-animal.dto';
+  
+  @Controller('animal')
+  export class AnimalController {
     constructor(private readonly animalService: AnimalService) {}
-
+  
     @Post()
+    @HttpCode(HttpStatus.CREATED)
     create(@Body() createAnimalDto: CreateAnimalDto) {
       return this.animalService.create(createAnimalDto);
     }
@@ -18,17 +30,19 @@ export class AnimalController {
     }
   
     @Get(':id')
-    findOne(@Param('id') id: string) {
-      return this.animalService.findOne(+id);
+    findOne(@Param('id', ParseIntPipe) id: number) {
+      return this.animalService.findOne(id);
     }
   
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateAnimalDto: UpdateAnimalDto) {
-      return this.animalService.update(+id, updateAnimalDto);
+    update(@Param('id', ParseIntPipe) id: number, @Body() updateAnimalDto: UpdateAnimalDto) {
+      return this.animalService.update(id, updateAnimalDto);
     }
   
     @Delete(':id')
-    remove(@Param('id') id: string) {
-      return this.animalService.remove(+id);
+    @HttpCode(HttpStatus.NO_CONTENT)
+    remove(@Param('id', ParseIntPipe) id: number) {
+      return this.animalService.remove(id);
     }
-}
+  }
+  
